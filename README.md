@@ -9,9 +9,8 @@ This is a guide on how we can setup our own SMTP server for sending lots of emai
 2. Finding a good host
 3. Setting up postfix
     3.1. Setting up server
-    3.2. Installing postfix
+    3.2. Installing postfix and authentication
     3.3. Enable DKIM
-    3.4. Enable authentication
     3.5. Setup SPF
 4. Monitoring
     4.1. Check if SPF and DKIM tests are passing
@@ -26,6 +25,10 @@ This is a guide on how we can setup our own SMTP server for sending lots of emai
 
 ## Overall Checklist
 - [ ] Have separate addresses (and servers) for sending different kind of emails.
+- [ ] Choose a host which provides reverse DNS and whitelisted IPs.
+- [ ] Start a new virtual server: use FQDN (eg `mail.domain.com`) as hostname.
+- [ ] Open a support ticked to allow SMTP.
+- [ ] Install postfix on server
 
 - [ ]  Setup [Google Postmaster account](https://postmaster.google.com/u/0/dashboards#do=screener.in&st=domainReputation&dr=7) to debug mail quality
 - [ ]  Setup [Outlook SNDS (smart network data service)](https://sendersupport.olc.protection.outlook.com/snds/index.aspx?wa=wsignin1.0)
