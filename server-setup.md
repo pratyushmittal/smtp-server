@@ -1,5 +1,12 @@
-Enable port 25 in ufw for particular IP
+# Configure firewall on server
 
 ```bash
-sudo ufw allow from 159.65.157.119 to any port 25
+# enable firewall
+sudo ufw enable
+
+# allow ssh
+sudo ufw limit ssh
+
+# allow firewall to send mails from particular IPs.
+sudo ufw allow from <IP.IP.IP.IP> to any port 25
 ```
