@@ -1,6 +1,6 @@
 # Installing postfix and setting up authentication
 
-Much of this guide is based on (Ubuntu's installation guide for Postfix)[https://help.ubuntu.com/community/Postfix].
+Much of this guide is based on [Ubuntu's installation guide for Postfix][ubuntu guide].
 
 ## Terms to understand during installation
 
@@ -283,3 +283,12 @@ quit
 ```
 
 If you need any help on sending email using telnet, use [MediaTemple's Guide](https://mediatemple.net/community/products/dv/204404584/sending-or-viewing-emails-using-telnet).
+
+
+## Troubleshooting
+
+- Check the original [Ubuntu's guide for postfix](https://help.ubuntu.com/community/Postfix#Troubleshooting).
+- Check [common Postfix commands](./postfix-commands.md) for debugging logs.
+
+
+[ubuntu guide]: https://help.ubuntu.com/community/Postfix

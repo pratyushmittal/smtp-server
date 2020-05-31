@@ -8,7 +8,7 @@ This is a guide on how we can setup our own SMTP server for sending lots of emai
 1. [Why take the pain?](./why-smtp.md) It is 100x cheaper and scalable.
 2. Finding a good host
     1. [Picking a good host](./choosing-host.md)
-    2. [Checking IP blacklist on common spam tracking services](./blaclist-status.md)
+    2. [Checking IP blacklist on common spam tracking services](./blacklist-status.md)
 3. Setting up postfix
     1. Setting up server
     2. [Installing postfix and authentication](setting-up-postfix.md)
@@ -22,7 +22,7 @@ This is a guide on how we can setup our own SMTP server for sending lots of emai
 5. Whitelisting
     1. Check on common services
     2. Whitelist on Hotmail
-6. Useful commands
+6. [Useful commands for debugging or handling send queue](./postfix-commands.md)
 
 
 ## Overall Checklist
