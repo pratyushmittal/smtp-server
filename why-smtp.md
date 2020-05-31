@@ -6,10 +6,10 @@ There is nothing like emails. Your users will love you if you send useful custom
 
 Sending customized automated emails require scalability. And it is not very scalable if we are paying money for sending each email.
 
-## Quick cost comparison
+## Monthly cost comparison
 
-Emails per DAY  | SES Cost  | Mailgun   | Own SMTP
----------------------------------------------------
-1,000           |           |           | 5
-10,000          |           |           | 5
-100,000         |           |           | 5
+| Emails per day | Amazon SES | Mailgun | Own server |
+|----------------|------------|---------|------------|
+| 1,000          | $3         | $24     | $5         |
+| 10,000         | $30        | $215    | $5         |
+| 100,000        | $300       | ---     | $5         |
