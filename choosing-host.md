@@ -9,7 +9,7 @@ Considerations when choosing a host:
 ## Reverse DNS
 
 Hosting providers that allow reverse DNS:
-- AWS
+- AWS: https://console.aws.amazon.com/support/contacts?#/rdns-limits
 
 Hosting providers that don't allow reverse DNS:
 - DigitalOcean doesn't allow reverse DNS on elastic IP.

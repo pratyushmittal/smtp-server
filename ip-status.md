@@ -8,7 +8,7 @@
 - [ ]  Send an email to outlook user. Request for [whitelisting](https://support.microsoft.com/en-us/supportrequestform/8ad563e3-288e-2a61-8122-3ba03d6b8d75) if blocked.
 
 
-## Template for blacklist removal request
+## Template to request removal from spam lists
 
 Sometimes we need to provide details about how we protect spam.
 

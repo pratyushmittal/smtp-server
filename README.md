@@ -8,7 +8,8 @@ This is a guide on how we can setup our own SMTP server for sending lots of emai
 1. [Why take the pain?](./why-smtp.md) It is 100x cheaper and scalable.
 2. Finding a good host
     1. [Picking a good host](./choosing-host.md)
-    2. [Checking IP blacklist on common spam tracking services](./blacklist-status.md)
+    2. [Checking IP common spam tracking services](./ip-status.md)
+    3. [Setup forward and reverse DNS](./dns-setup.md)
 3. Setting up postfix
     1. [Setting up server](./server-setup.md)
     2. [Installing postfix and authentication](./setting-up-postfix.md)
@@ -29,7 +30,7 @@ This is a guide on how we can setup our own SMTP server for sending lots of emai
 - [ ] Choose a host which provides reverse DNS and whitelisted IPs: [choosing host](./choosing-host.md)
 - [ ] Start a new virtual server: use FQDN (eg `mail.domain.com`) as hostname.
 - [ ]  Assign Elastic IP as they are negotiated for whitelisting.
-- [ ]  Check Server IP Quality on blacklisting services: [blacklisting status](./blacklisting-status.md)
+- [ ]  Check Server IP Quality on spam tracking services: [IP status](./ip-status.md)
 
 - [ ] Open a support ticket with your host to allow SMTP.
 - [ ] Enable firewall: [server setup](./server-setup.md)
