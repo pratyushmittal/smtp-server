@@ -14,7 +14,7 @@ This is a guide on how we can setup our own SMTP server for sending lots of emai
     1. [Setting up server](./server-setup.md)
     2. [Installing postfix and authentication](./setting-up-postfix.md)
     3. [Setting up DKIM](./setting-up-dkim.md)
-    4. Setup SPF
+    4. [Setup SPF](./spf.md)
 4. Monitoring
     1. Check if SPF and DKIM tests are passing
     2. Monitor server health using Google Postmaster
