@@ -43,21 +43,21 @@ UserID                  opendkim:opendkim
 Socket                  inet:12301@localhost
 ```
 
-**AutoRestart**: auto restart the filter on failures
-**AutoRestartRate**: specifies the filter’s maximum restart rate, if restarts begin to happen faster than this rate, the filter will terminate; 10/1h - 10 restarts/hour are allowed at most
-**UMask**: gives all access permissions to the user group defined by UserID and allows other users to read and execute files, in this case it will allow the creation and modification of a Pid file.
-**Syslog, SyslogSuccess, LogWhy**: these parameters enable detailed logging via calls to syslog
-**Canonicalization**: defines the canonicalization methods used at message signing, the `simple` method allows almost no modification while the `relaxed` one tolerates minor changes such as whitespace replacement;
-`relaxed/simple` - the message header will be processed with the `relaxed` algorithm and the body with the `simple` one
-**ExternalIgnoreList**: specifies the external hosts that can send mail through the server as one of the signing domains without credentials
-**InternalHosts**: defines a list of internal hosts whose mail should not be verified but signed instead
-**KeyTable**: maps key names to signing keys
-**SigningTable**: lists the signatures to apply to a message based on the address found in the `From:` header field
-**Mode**: declares operating modes; in this case the milter acts as a signer (`s`) and a verifier (`v`)
-**PidFile**: the path to the Pid file which contains the process identification number
-**SignatureAlgorithm**: selects the signing algorithm to use when creating signatures
-**UserID**: the opendkim process runs under this user and group
-**Socket**: the milter will listen on the socket specified here, Posfix will send messages to opendkim for signing and verification through this socket; `12301@localhost` defines a TCP socket that listens on `localhost`, port `12301`
+- **AutoRestart**: auto restart the filter on failures
+- **AutoRestartRate**: specifies the filter’s maximum restart rate, if restarts begin to happen faster than this rate, the filter will terminate; 10/1h - 10 restarts/hour are allowed at most
+- **UMask**: gives all access permissions to the user group defined by UserID and allows other users to read and execute files, in this case it will allow the creation and modification of a Pid file.
+- **Syslog, SyslogSuccess, LogWhy**: these parameters enable detailed logging via calls to syslog
+- **Canonicalization**: defines the canonicalization methods used at message signing, the `simple` method allows almost no modification while the `relaxed` one tolerates minor changes such as whitespace replacement;
+- `relaxed/simple` - the message header will be processed with the `relaxed` algorithm and the body with the `simple` one
+- **ExternalIgnoreList**: specifies the external hosts that can send mail through the server as one of the signing domains without credentials
+- **InternalHosts**: defines a list of internal hosts whose mail should not be verified but signed instead
+- **KeyTable**: maps key names to signing keys
+- **SigningTable**: lists the signatures to apply to a message based on the address found in the `From:` header field
+- **Mode**: declares operating modes; in this case the milter acts as a signer (`s`) and a verifier (`v`)
+- **PidFile**: the path to the Pid file which contains the process identification number
+- **SignatureAlgorithm**: selects the signing algorithm to use when creating signatures
+- **UserID**: the opendkim process runs under this user and group
+- **Socket**: the milter will listen on the socket specified here, Posfix will send messages to opendkim for signing and verification through this socket; `12301@localhost` defines a TCP socket that listens on `localhost`, port `12301`
 
 
 ### Connect the milter to Postfix:
