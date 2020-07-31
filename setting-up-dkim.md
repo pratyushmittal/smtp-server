@@ -73,97 +73,100 @@ Configure postfix to use this milter by editing `/etc/postfix/main.cf`. Make sur
 ```conf
 milter_protocol = 2
 milter_default_action = accept
-```
-
-It is likely that a filter (SpamAssasin, Clamav etc.) is already used by Postfix; if the following parameters are present, just append the opendkim milter to them (milters are separated by a comma), the port number should be the same as in opendkim.conf:
-
-smtpd_milters = unix:/spamass/spamass.sock, inet:localhost:12301
-non_smtpd_milters = unix:/spamass/spamass.sock, inet:localhost:12301
-If the parameters are missing, define them as follows:
-
 smtpd_milters = inet:localhost:12301
 non_smtpd_milters = inet:localhost:12301
+```
+
 Create a directory structure that will hold the trusted hosts, key tables, signing tables and crypto keys:
 
+```bash
 sudo mkdir /etc/opendkim
 sudo mkdir /etc/opendkim/keys
-Specify trusted hosts:
+```
 
-sudo nano /etc/opendkim/TrustedHosts
-We will use this file to define both ExternalIgnoreList and InternalHosts, messages originating from these hosts, domains and IP addresses will be trusted and signed.
+Create `/etc/opendkim/TrustedHosts` and specify trusted hosts in it.
+We will use this file to define both ExternalIgnoreList and InternalHosts. Messages originating from these hosts, domains and IP addresses will be trusted and signed.
 
-Because our main configuration file declares TrustedHosts as a regular expression file (refile), we can use wildcard patters, *.example.com means that messages coming from example.com’s subdomains will be trusted too, not just the ones sent from the root domain.
+Because our main configuration file declares TrustedHosts as a regular expression file (refile), we can use wildcard patters, *.domain.com means that messages coming from domain.com’s subdomains will be trusted too, not just the ones sent from the root domain.
 
 Customize and add the following lines to the newly created file. Multiple domains can be specified, do not edit the first three lines:
 
+```conf
 127.0.0.1
 localhost
 192.168.0.1/24
 
-*.example.com
+*.domain.com
 
-#*.example.net
-#*.example.org
-Create a key table:
+#*.domain.net
+#*.domain.org
+```
 
-sudo nano /etc/opendkim/KeyTable
+Create a key table at `/etc/opendkim/KeyTable`
 A key table contains each selector/domain pair and the path to their private key. Any alphanumeric string can be used as a selector, in this example mail is used and it’s not necessary to change it.
 
-mail._domainkey.example.com example.com:mail:/etc/opendkim/keys/example.com/mail.private
+```conf
+mail._domainkey.domain.com domain.com:mail:/etc/opendkim/keys/domain.com/mail.private
 
 #mail._domainkey.example.net example.net:mail:/etc/opendkim/keys/example.net/mail.private
 #mail._domainkey.example.org example.org:mail:/etc/opendkim/keys/example.org/mail.private
-Create a signing table:
+```
 
-sudo nano /etc/opendkim/SigningTable
+Create a signing table at `/etc/opendkim/SigningTable`.
 This file is used for declaring the domains/email addresses and their selectors.
 
-*@example.com mail._domainkey.example.com
+```conf
+*@domain.com mail._domainkey.domain.com
 
 #*@example.net mail._domainkey.example.net
 #*@example.org mail._domainkey.example.org
-Generate the public and private keys
-Change to the keys directory:
+```
 
+Generate the public and private keys:
+
+```bash
 cd /etc/opendkim/keys
-Create a separate folder for the domain to hold the keys:
+sudo mkdir domain.com
+cd domain.com
 
-sudo mkdir example.com
-cd example.com
-Generate the keys:
+# Generate the keys
+sudo opendkim-genkey -s mail -d domain.com
+# -s specifies the selector and -d the domain, this command will create two files, mail.private is our private key and mail.txt contains the public key.
 
-sudo opendkim-genkey -s mail -d example.com
--s specifies the selector and -d the domain, this command will create two files, mail.private is our private key and mail.txt contains the public key.
-
-Change the owner of the private key to opendkim:
-
+# Change the owner of the private key to opendkim:
 sudo chown opendkim:opendkim mail.private
-Add the public key to the domain’s DNS records
-Open mail.txt:
+```
 
-sudo nano -$ mail.txt
-The public key is defined under the p parameter. Do not use the example key below, it’s only an illustration and will not work on your server.
+Add the public key to the domain’s DNS records:
 
-mail._domainkey IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5N3lnvvrYgPCRSoqn+awTpE+iGYcKBPpo8HHbcFfCIIV10Hwo4PhCoGZSaKVHOjDm4yefKXhQjM7iKzEPuBatE7O47hAx1CJpNuIdLxhILSbEmbMxJrJAG0HZVn8z6EAoOHZNaPHmK2h4UUrjOG8zA5BHfzJf7tGwI+K619fFUwIDAQAB" ; ----- DKIM key mail for example.com
-Copy that key and add a TXT record to your domain’s DNS entries:
+```bash
+cat mail.txt
+```
 
-Name: mail._domainkey.example.com.
+It will output something like:
 
-Text: "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5N3lnvvrYgPCRSoqn+awTpE+iGYcKBPpo8HHbcFfCIIV10Hwo4PhCoGZSaKVHOjDm4yefKXhQjM7iKzEPuBatE7O47hAx1CJpNuIdLxhILSbEmbMxJrJAG0HZVn8z6EAoOHZNaPHmK2h4UUrjOG8zA5BHfzJf7tGwI+K619fFUwIDAQAB"
+```bash
+# illustration only - DON'T USE THIS
 
+mail._domainkey	IN	TXT	( "v=DKIM1; h=sha256; k=rsa; "
+	  "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5N3lnvvrYgPCRSoqn+awTpE+iGYcKBPpo8HHbcFfCI"
+	  "aONa6E69qUXDAVFisYVgrKhMtInXsLB1PJFHic58pLm/OjDm4yefKXhQjM7iKzEPuBatE7O47hAx1CJpNuIdLxhILSbEmbMxJrJAG0HZVn8z6EAoOHZNaPHmK2h4UUrjOG8zA5BHfzJf7tGwI+K619fFUwIDAQAB" )  ; ----- DKIM key post for domain.com
+```
 
-
-
-Please note that the DNS changes may take a couple of hours to propagate.
+It is showing the DNS record we need to add. Create a `TXT` DNS entry for `mail._domainkey` with the content as text in the brackets.
 
 Restart Postfix and OpenDKIM:
 
+```bash
 sudo service postfix restart
 sudo service opendkim restart
+```
+
 Congratulations! You have successfully configured DKIM for your mail server!
 
 The configuration can be tested by sending an empty email to check-auth@verifier.port25.com and a reply will be received. If everything works correctly you should see DKIM check: pass under Summary of Results.
 
+```txt
 ==========================================================
 Summary of Results
 ==========================================================
@@ -175,8 +178,9 @@ SpamAssassin check: ham
 Alternatively, you can send a message to a Gmail address that you control, view the received email’s headers in your Gmail inbox, dkim=pass should be present in the Authentication-Results header field.
 
 Authentication-Results: mx.google.com;
-       spf=pass (google.com: domain of contact@example.com designates --- as permitted sender) smtp.mail=contact@example.com;
-       dkim=pass header.i=@example.com;
+       spf=pass (google.com: domain of contact@domain.com designates --- as permitted sender) smtp.mail=contact@domain.com;
+       dkim=pass header.i=@domain.com;
+```
 
 
 [DigitalOcean Guide]: https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy
