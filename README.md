@@ -17,8 +17,7 @@ This is a guide on how we can setup our own SMTP server for sending lots of emai
     4. [Setup SPF](./spf.md)
 4. Monitoring
     1. Check if SPF and DKIM tests are passing
-    2. Monitor server health using Google Postmaster
-    3. Monitoring spams using Hotmail's SNDS
+    2. [Monitor server health using Google's Postmaster and Outlook's SNDS](./monitoring-services.md)
     4. Script to get daily error logs
 5. Whitelisting
     1. Check on common services
