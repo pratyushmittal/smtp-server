@@ -16,8 +16,9 @@ This is a guide on how we can setup our own SMTP server for sending lots of emai
     3. [Setting up DKIM](./setting-up-dkim.md)
     4. [Setup SPF](./spf.md)
 4. Monitoring
-    1. Check if SPF and DKIM tests are passing
-    2. [Monitor server health using Google's Postmaster and Outlook's SNDS](./monitoring-services.md)
+    1. Sending test emails and getting verified[./production.md]
+    2. Check if SPF and DKIM tests are passing
+    3. [Monitor server health using Google's Postmaster and Outlook's SNDS](./monitoring-services.md)
     4. Script to get daily error logs
 5. Whitelisting
     1. Check on common services

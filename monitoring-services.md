@@ -16,3 +16,7 @@ It allows you to add the specific server IPs you will be sending emails from. It
 
 [snds]: https://sendersupport.olc.protection.outlook.com/snds/index.aspx?wa=wsignin1.0
 [postmaster]: https://postmaster.google.com
+
+## DNSWL
+
+Register on DNSWL for blacklist reporting: https://www.dnswl.org/selfservice/
