@@ -167,7 +167,7 @@ sudo apt-get install libsasl2-2 sasl2-bin libsasl2-modules
 
 We not need to move root path of `saslauthd` into `/var/spool/postfix`.
 
-First, we edit `/etc/default/saslauthd` in order to activate saslauthd. Remove # in front of `START=yes`, add the `PWDIR`, `PARAMS`, and `PIDFILE` lines and edit the `OPTIONS` line at the end:
+First, we edit `/etc/default/saslauthd` in order to activate saslauthd. Remove # in front of `START=yes` Or replace with `START=no`, add the `PWDIR`, `PARAMS`, and `PIDFILE` lines and edit the `OPTIONS` line at the end:
 
 ```conf
 # This needs to be uncommented before saslauthd will be run automatically
@@ -198,7 +198,7 @@ OPTIONS="-c -m /var/spool/postfix/var/run/saslauthd"
 Next, we update the dpkg "state" of `/var/spool/postfix/var/run/saslauthd`. The saslauthd init script uses this setting to create the missing directory with the appropriate permissions and ownership:
 
 ```bash
-sudo dpkg-statoverride --force --update --add root sasl 755 /var/spool/postfix/var/run/saslauthd
+sudo dpkg-statoverride --force-all --update --add root sasl 755 /var/spool/postfix/var/run/saslauthd
 ```
 
 This may report an error that "--update given" and the "/var/spool/postfix/var/run/saslauthd" directory does not exist. You can ignore this because when you start saslauthd next it will be created.
