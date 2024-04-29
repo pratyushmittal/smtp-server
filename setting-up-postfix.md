@@ -209,6 +209,9 @@ Finally, start saslauthd:
 sudo /etc/init.d/saslauthd start
 ```
 
+Ubuntu 22.04 onwards, the above gives error: `Can't open PID file /run/saslauthd/saslauthd.pid`.
+We can fix this by changing line to `PIDFile=/var/spool/postfix/var/run/saslauthd/saslauthd.pid` in `/usr/lib/systemd/system/saslauthd.service`
+
 ### Testing
 
 To see if SMTP-AUTH and TLS work properly now run the following command:
