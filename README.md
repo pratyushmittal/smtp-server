@@ -1,50 +1,83 @@
-# Setting up SMTP server for sending emails
+# Setting up postfix server
 
-This is a guide on how we can setup our own SMTP server for sending lots of emails.
+Documenting best guides for setting up postfix server.
 
-
-## Topics
-
-1. [Why take the pain?](./why-smtp.md) It is 100x cheaper and scalable.
-2. Finding a good host
-    1. [Picking a good host](./choosing-host.md)
-    2. [Checking IP common spam tracking services](./ip-status.md)
-    3. [Setup forward and reverse DNS](./dns-setup.md)
-3. Setting up postfix
-    1. [Setting up server](./server-setup.md)
-    2. [Installing postfix and authentication](./setting-up-postfix.md)
-    3. [Setting up DKIM](./setting-up-dkim.md)
-    4. [Setup SPF](./spf.md)
-4. Monitoring
-    1. Sending test emails and getting verified[./production.md]
-    2. Check if SPF and DKIM tests are passing
-    3. [Monitor server health using Google's Postmaster and Outlook's SNDS](./monitoring-services.md)
-    4. Script to get daily error logs
-5. Whitelisting
-    1. Check on common services
-    2. Whitelist on Hotmail
-6. [Useful commands for debugging or handling send queue](./postfix-commands.md)
+1. Setup forward and reverse DNS: [DNS Guide](https://github.com/pratyushmittal/smtp-server/blob/master/dns-setup.md)
+2. Install Postfix: [Postfix Guide](https://github.com/pratyushmittal/smtp-server/blob/master/setting-up-postfix.md)
+3. Setting up SPF and DKIM: [PepiPost Guide](https://netcorecloud.com/tutorials/setup-spf-and-dkim-with-postfix-on-ubuntu/)
+4. Install [pflogsumm](https://github.com/pratyushmittal/smtp-server/blob/master/pflogsumm-setup.md)
+4. Setup DMARC: Add TXT record for `_dmarc.from-address.com` with value `v=DMARC1; p=quarantine; rua=mailto:postmaster@example.com; pct=100`. [https://www.uriports.com/dmarc](URIPorts) offers DMARC rua as a service for $1/month.
+4. Configure deferred emails: [JRS Blog](https://jrs-s.net/2013/04/17/configuring-retry-duration-in-postfix/)
+5. Setup different policies for different domains: [Policy Rate Limiting](https://web.archive.org/web/20210122150840/http://steam.io/2013/04/01/postfix-rate-limiting/). Ensure to edit both `/etc/postfix/main.cf` as well as `/etc/postfix/master.cf`
+6. Disable ipv6 protocol: [Fix Postfix network unreachable](https://www.nucleiotechnologies.com/how-to-fix-postfix-smtp-network-is-unreachable-error/)
+7. A good guide on line-by-line postfix config: https://jan.wildeboer.net/2022/08/Email-1-Postfix-2022/
+8. Add the new server to [Google Postmaster](https://postmaster.google.com/u/0/managedomains) and [Outlook SNDS](https://sendersupport.olc.protection.outlook.com/snds/index.aspx).
+9. Enroll for [Yahoo's CFL](https://senders.yahooinc.com/complaint-feedback-loop/).
+10. [Monitor the logs](./troubleshooting-emails.md) for next few days.
+11. Enable encryption for Gmail: [Encryption](https://serverfault.com/questions/853355/postfix-gmail-encryption)
+12. [Increase SWAP](https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-20-04) to `pflogsum`. We should have memory equal to the size of `/var/log/mail.log`.
 
 
-## Overall Checklist
-- [ ] Choose a host which provides reverse DNS and whitelisted IPs: [choosing host](./choosing-host.md)
-- [ ] Start a new virtual server: use FQDN (eg `mail.domain.com`) as hostname.
-- [ ]  Assign Elastic IP as they are negotiated for whitelisting.
-- [ ]  Check Server IP Quality on spam tracking services: [IP status](./ip-status.md)
+## Commands
 
-- [ ] Open a support ticket with your host to allow SMTP.
-- [ ] Enable firewall: [server setup](./server-setup.md)
-- [ ] Install postfix on server: [installing postfix](./setting-up-postfix.md)
-- [ ] Send a test mail from SMTP server
-- [ ] Send a test mail from another machine using authentication
+- `systemctl reload postfix` to reload changes after modifying `main.cf`
 
-- [ ] Fine tune installation
-- [ ] Setup SPF DNS record
-- [ ] Setup DKIM DNS record
-- [ ] Setup PTR record (reverse DNS): done at [host level](http://joshua5201.github.io/blog/2015/06/06/setting-up-reverse-dns-ptr-record-in-digitalocean/): check status [here](https://mxtoolbox.com/SuperTool.aspx?action=ptr%3a159.65.157.119&run=toolpage#)
-    - [ ]  [Floating IP on DigitalOcean does not support PTR](https://www.digitalocean.com/community/questions/how-do-i-set-the-ptr-for-a-floating-ip).
-- [ ]  Send a test mail to see results: `echo "Testing" | mail -aReply-To:your.email@gmail.com -s "Testing Mail" check-auth@verifier.port25.com`
 
-- [ ]  Setup [Google Postmaster account](https://postmaster.google.com/u/0/dashboards#do=screener.in&st=domainReputation&dr=7) to debug mail quality
-- [ ]  Setup [Outlook SNDS (smart network data service)](https://sendersupport.olc.protection.outlook.com/snds/index.aspx?wa=wsignin1.0)
-- [ ]  Subscribe to JMRP: [https://kb.iweb.com/hc/en-us/articles/230267648-Subscribing-to-Microsoft-JMRP-and-SNDS](https://kb.iweb.com/hc/en-us/articles/230267648-Subscribing-to-Microsoft-JMRP-and-SNDS)
+## Email template
+
+We often need to drop a request to AWS or other hosting provider to increase the sending limits. This template can be used for such emails.
+
+```
+(your website name) provides (what you do).
+We use emails to (why?).
+
+**Protection:**
+- All emails follow with SPF and DKIM specifications
+- All emails contain "List-Unsubscribe" headers for one-click unsubscribe
+- Enabled SASL and firewall to send emails only from internal IPs.
+- Have registered on Google Postmaster and Outlook's SNDS to track IP reputation.
+- All complaints and bounces are immediately dealth with.
+
+**Quality:**
+- We email only registered users who ask for email updates.
+- We have not purchased any email list.
+- [any other thing you can show for quality. like reviews or age of website].
+```
+
+## TLS Setup
+
+We need to configure TLS support on Postfix to use it with Django and Ruby libraries.
+
+- Install [Certbot](https://certbot.eff.org/instructions?ws=other&os=ubuntufocal)
+- Use `--standalone` option to create certificates by spinning up a certbot www server
+
+The above will show something like:
+
+```
+Certificate is saved at: /etc/letsencrypt/live/post.screener.in/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/post.screener.in/privkey.pem
+```
+
+Add it to postix config
+
+```
+sudo vi /etc/postfix/main.cf
+
+# add this
+smtpd_tls_security_level = may
+smtpd_tls_chain_files =
+    /etc/letsencrypt/live/post.screener.in/privkey.pem,
+    /etc/letsencrypt/live/post.screener.in/fullchain.pem
+    
+# reload postfix
+systemctl reload postfix
+```
+
+Add cron to reload ssl certificates in postfix: `sudo crontab -e -uroot`
+
+```
+# reload postfix configuration every month
+# the ssl renewal is done automatically every 60 days using certbot
+# we can see that using `systemctl list-timers`
+0 1 1 1 1 systemctl reload postfix
+```
