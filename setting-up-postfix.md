@@ -311,6 +311,10 @@ sudo postfix tls new-server-cert
 # I didn't publish the TLSA records when writing this.
 ```
 
+The above generates self-certified certificate and key for TLS. This has a weak encryption (1024 bits). This doesn't work with Django.
+
+To use the above server with Django, use LetsEncrypt certificate and key. Replace key and certificate paths with this in `main.cf`.
+
 ## Troubleshooting
 
 - Check the original [Ubuntu's guide for postfix](https://help.ubuntu.com/community/Postfix#Troubleshooting).
