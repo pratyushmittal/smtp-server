@@ -301,6 +301,16 @@ quit
 If you need any help on sending email using telnet, use [MediaTemple's Guide](https://mediatemple.net/community/products/dv/204404584/sending-or-viewing-emails-using-telnet).
 
 
+## Enable TLS
+
+```
+sudo postfix tls enable-client
+sudo postfix tls enable-server
+sudo postfix tls new-server-cert
+# run the commands the above generates
+# I didn't publish the TLSA records when writing this.
+```
+
 ## Troubleshooting
 
 - Check the original [Ubuntu's guide for postfix](https://help.ubuntu.com/community/Postfix#Troubleshooting).
