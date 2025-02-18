@@ -207,6 +207,10 @@ Finally, start saslauthd:
 
 ```bash
 sudo /etc/init.d/saslauthd start
+
+# create path if above gives errors
+sudo mkdir -p /var/spool/postfix/var/run/
+chown -R postfix:ubuntu /var/spool/postfix/var
 ```
 
 Ubuntu 22.04 onwards, the above gives error: `Can't open PID file /run/saslauthd/saslauthd.pid`.
